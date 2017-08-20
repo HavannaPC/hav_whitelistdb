@@ -50,11 +50,10 @@ function removeWhiteList(identifier)
 end
 
 function isWhiteListed(identifier)
-	MySQL.Async.fetchAll("SELECT whitelisted FROM user_whitelist WHERE identifier = @username AND whitelisted = 1", {['@username'] = identifier}, function(result)
-		if (result[1]) ~= nil then
-			return true
-		end
-	end)
+	local result = MySQL.Sync.fetchScalar("SELECT whitelisted FROM user_whitelist WHERE identifier = @username AND whitelisted = 1", {['@username'] = identifier})
+	if result then
+		return true
+	end
 	return false
 end
 
