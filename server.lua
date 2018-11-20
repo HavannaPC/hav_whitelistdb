@@ -42,8 +42,8 @@ TriggerEvent('es:addGroupCommand', 'wlremove', 'admin', function(source, args, u
 	else
 		TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, 'Incorrect identifier!')
 	end
-end, function(source, args, user)
-	TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, 'Insufficienct permissions!')
+end, function(_source, args, user)
+	TriggerClientEvent('chatMessage', _source, 'SYSTEM', {255, 0, 0}, 'Insufficienct permissions!')
 end)
 
 function addWhitelist(identifier)
