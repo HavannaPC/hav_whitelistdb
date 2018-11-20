@@ -5,7 +5,7 @@ AddEventHandler( 'playerConnecting', function(name, setReason )
 	local whitelistStatus = getWhitelisted(identifier)
 	if whitelistStatus == 0 then
 		setReason('You are not whitelisted on this server')
-		print('(' .. identifier .. ') ' .. name .. ' has been kicked because they are not WhiteListed')
+		print('(' .. identifier .. ') ' .. name .. ' has been kicked because they are not Whitelisted')
 		CancelEvent()
 	elseif whitelistStatus == 2 then
 		setReason('You are banned!')
@@ -17,7 +17,7 @@ end)
 -- Chat Command to add someone in WhiteList
 TriggerEvent('es:addGroupCommand', 'wladd', 'admin', function(source, args, user)
 	if #args == 2 then
-		if isWhiteListed(args[2]) then
+		if isWhitelisted(args[2]) then
 			TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, args[2] .. ' is already whitelisted!')
 		else
 			addWhiteList(args[2])
@@ -33,7 +33,7 @@ end)
 -- Chat Command to remove someone in WhiteList
 TriggerEvent('es:addGroupCommand', 'wlremove', 'admin', function(source, args, user)
 	if #args == 2 then
-		if isWhiteListed(args[2]) then
+		if isWhitelisted(args[2]) then
 			removeWhiteList(args[2])
 			TriggerClientEvent('chatMessage', source, 'SYSTEM', {255, 0, 0}, args[2] .. ' is no longer whitelisted!')
 		else
@@ -54,12 +54,13 @@ function removeWhiteList(identifier)
 	MySQL.Sync.execute('DELETE FROM user_whitelist WHERE identifier = @identifier', {['@identifier'] = identifier})
 end
 
-function isWhiteListed(identifier)
-	local result = MySQL.Sync.fetchScalar('SELECT whitelisted FROM user_whitelist WHERE identifier = @username AND whitelisted = 1', {['@username'] = identifier})
-	if result then
+function isWhitelisted(identifier)
+	local result = MySQL.Sync.fetchScalar('SELECT whitelisted FROM user_whitelist WHERE identifier = @username', {['@username'] = identifier})
+	if result == 1 then
 		return true
+	else
+		return false
 	end
-	return false
 end
 
 function getWhitelisted(identifier)
@@ -75,7 +76,7 @@ AddEventHandler('rconCommand', function(commandName, args)
 			CancelEvent()
 			return
 		end
-		if isWhiteListed(args[1]) then
+		if isWhitelisted(args[1]) then
 			RconPrint(args[1] .. ' is already whitelisted!\n')
 			CancelEvent()
 		else
@@ -89,7 +90,7 @@ AddEventHandler('rconCommand', function(commandName, args)
 			CancelEvent()
 			return
 		end
-		if isWhiteListed(args[1]) then
+		if isWhitelisted(args[1]) then
 			removeWhiteList(args[1])
 			RconPrint(args[1] .. ' is no longer whitelisted!\n')
 			CancelEvent()
